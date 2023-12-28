@@ -1,0 +1,31 @@
+# vim: set number relativenumber tabstop=4 shiftwidth=4 expandtab:
+# this is a test of the "group-files" function in just at top level
+
+#tmpdir := `mktemp`
+
+xx := `mkdir -p ./tmp`
+
+tmpdir := "tmp"
+JUST_PARENT:= "../justfile" # we test on this
+
+set-up:
+    #!/usr/bin/env bash
+    cd {{ tmpdir }}
+    touch "12345_1.txt"
+    touch "12345_1_1.txt"
+    touch "12345_1_2.txt"
+    touch "12345_1_3.txt"
+    touch "12345_1_4xx.txt"
+    touch "12345_2.txt"
+    touch "12345_3.txt"
+    ls
+
+test-relocate:
+    tree {{ tmpdir }}
+    just -f {{ JUST_PARENT }} group-files ./tests/{{ tmpdir }} #we prefix tmpdir with ./tests, our current directory
+    tree {{ tmpdir }}
+    
+clean:
+    rm -r -v {{ tmpdir }}
+
+
